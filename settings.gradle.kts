@@ -1,2 +1,1 @@
-rootProject.name = "scratch"
-
+rootProject.name = "proxy"
