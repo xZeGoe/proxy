@@ -40,6 +40,7 @@ import java.net.StandardProtocolFamily;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -760,7 +761,7 @@ public final class ViaProxyTemplate {
             final boolean bridgeFinishConfig = rawPacket instanceof FinishConfigurationPacket && legacyConfigBridge();
 
             if (legacyConfigBridge() && rawPacket instanceof SelectKnownPacksPacket selectKnownPacksPacket) {
-                bridgeLegacyKnownPacks(selectKnownPacksPacket);
+                bridgeLegacyKnownPacks();
                 return;
             }
 
@@ -972,12 +973,11 @@ public final class ViaProxyTemplate {
             }
         }
 
-        private void bridgeLegacyKnownPacks(SelectKnownPacksPacket selectKnownPacksPacket) {
+        private void bridgeLegacyKnownPacks() {
             final BackendConnection current = activeBackend;
             if (current == null) return;
-
             final ClientSelectKnownPacksPacket packet =
-                    new ClientSelectKnownPacksPacket(selectKnownPacksPacket.entries());
+                    new ClientSelectKnownPacksPacket(List.of());
 
             current.context.writeClient(packet);
             ProxyPackets.syncAfterClientForward(packet, current.context);
